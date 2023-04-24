@@ -1,0 +1,31 @@
+name: flutter_plugin_ble_printer_example
+description: Demonstrates how to use the flutter_plugin_ble_printer plugin.
+
+
+environment:
+  sdk: '>=2.18.2 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_plugin_ble_printer:
+
+    path: ../
+
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+  flutter_lints: ^2.0.0
+
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/files/
+    - assets/images/
+

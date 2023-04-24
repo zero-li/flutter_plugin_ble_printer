@@ -1,0 +1,50 @@
+! 0 200 200 800 1
+PAGE-WIDTH 576
+BOX 0 80 576 687 2
+LINE 0 80 558 80 1
+LINE 0 218 558 218 1
+LINE 0 278 558 278 1
+LINE 0 352 558 352 1
+LINE 0 482 558 482 1
+LINE 0 612 558 612 1
+LINE 0 687 558 687 1
+LINE 280 278 280 352 1
+LINE 56 352 56 687 1
+LINE 223 612 223 687 1
+LINE 390 612 390 687 1
+CENTER
+BARCODE 128 2 3 80 0 90 [barcode]
+SETSP 12
+T 8 0 0 178 [barcode]
+SETSP O
+SETMAG 2 2
+T 20 0 0 233 [signCode]
+SETMAG 1 1
+SETBOLD 1
+LEFT
+SETMAG 2 2
+T 2 0 40 292 [transitPlace]
+SETMAG 1 1
+SETBOLD 0
+SETBOLD 1
+T 2 0 290 308 [date]
+SETBOLD 0
+SETBOLD 1
+LEFT
+T 8 0 15 380 收
+T 8 0 15 420 件
+T 8 0 15 512 寄
+T 8 0 15 552 件
+T 8 0 15 622 服
+T 8 0 15 652 务
+SETBOLD 1
+T 4 0 65 365 [Receiver] [Receiver_Phone]
+T 4 0 65 410 [Receiver_address_detail]
+T 4 0 65 450 [Receiver_address_detail2]
+SETBOLD 0
+T 8 0 65 502 [Sender] [Sender_Phone]
+T 8 0 65 547 [Sender_address_detail]
+T 8 0 65 592 [Sender_address_detail2]
+T 3 0 65  622 内容品名:[goodName]
+T 3 0 65  642 计费重量:[wight]
+T 3 0 230  622 签收人/签收时间

@@ -1,0 +1,15 @@
+! 0 200 200 240 1
+PAGE-WIDTH 576
+LEFT
+T 8 0 134 10 [dayTime]
+CENTER
+T 8 0 0 20 [pickCodeTop]
+SETMAG 2 2
+T 8 0 0 54 [pickCodeBig]
+SETMAG 1 1
+BARCODE 128 1 1 50 0 100 [barcode]
+SETSP 6
+T 8 0 0 168 [barcode]
+SETSP 0
+CENTER
+BOX 0 0 320 220 3
