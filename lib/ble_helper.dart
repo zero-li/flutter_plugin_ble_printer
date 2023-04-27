@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_plugin_ble_printer/src/pigeon_bluetooth.dart';
-import 'package:flutter_plugin_ble_printer/src/zgo_bluetooth_api.dart';
 import 'package:get/get.dart';
+
+import 'flutter_plugin_ble_printer.dart';
 
 ///
 /// @Desc:
@@ -12,7 +12,6 @@ import 'package:get/get.dart';
 ///
 /// @Date: 22/12/23
 ///
-class BleHelper {}
 
 class BleStateWidget extends StatelessWidget {
   const BleStateWidget({Key? key}) : super(key: key);

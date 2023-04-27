@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:flutter_plugin_ble_printer/pigeon_ble_printer.dart';
+import 'package:flutter_plugin_ble_printer/src/pigeon_ble_printer.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

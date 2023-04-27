@@ -1,10 +1,4 @@
-import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_plugin_ble_printer/src/pigeon_bluetooth.dart';
-import 'package:get/get.dart';
-
+//
 ///
 /// @Desc:
 ///
@@ -13,7 +7,7 @@ import 'package:get/get.dart';
 /// @Date: 23/4/17
 ///
 ///
-// part of flutter_plugin_ble_printer;
+part of flutter_plugin_ble_printer;
 
 enum ZgoBTDeviceState {
   disconnect,
