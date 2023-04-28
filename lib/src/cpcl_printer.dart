@@ -4,9 +4,6 @@ part of flutter_plugin_ble_printer;
 class CPCLPrinter {
   CPCLPrinter._();
 
-  static bool isConnected = false;
-
-  static ZgoBTDevice? device;
 
   static final FlutterPrintApi _api = FlutterPrintApi();
 

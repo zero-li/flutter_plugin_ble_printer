@@ -87,6 +87,7 @@ class ZgoBTApi extends FlutterBluetoothApi {
     // Clear scan results list
     _scanResults.value = [];
 
+    //await disconnect(reconnect: true);
     await _api.scanBluetooth();
 
     timeout ??= Duration(seconds: 4);
@@ -107,6 +108,7 @@ class ZgoBTApi extends FlutterBluetoothApi {
 
   Future<void> disconnect() async {
     await _api.disconnectPrinter();
+    _deviceConnected.value = null;
   }
 
   @override
@@ -128,16 +130,39 @@ class ZgoBTApi extends FlutterBluetoothApi {
   void whenFindAllDevice(List<ZgoBTDevice?> list) {
     List<ZgoBTDevice> listNew = [];
 
+    ZgoBTDevice? connected = _deviceConnected.value;
+
+    bool hasConnected = false;
+
+    if (connected != null) {
+      listNew.add(connected);
+      hasConnected = true;
+    }
+
     for (var device in list) {
       debugPrint(
           "whenFindAllDevice ${device?.name}  address: ${device?.address}");
       if (device != null) {
-        listNew.add(device);
+        if (hasConnected) {
+          if (device.address != listNew.first.address) {
+            listNew.add(device);
+          }
+        } else {
+          listNew.add(device);
+        }
       }
     }
 
+    // if(connected!= null){
+    //   connectPrinter(connected);
+    // }
+
     debugPrint("whenFindAllDevice :${listNew.length}");
     _scanResults.value = listNew;
+
+    if (listNew.isEmpty) {
+      disconnect();
+    }
   }
 
   @override

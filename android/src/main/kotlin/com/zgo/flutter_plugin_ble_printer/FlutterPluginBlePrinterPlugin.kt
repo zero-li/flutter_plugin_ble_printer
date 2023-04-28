@@ -88,7 +88,7 @@ class FlutterPluginBlePrinterPlugin : FlutterPlugin, ActivityAware, FlutterPrint
     }
 
     override fun onDetachedFromActivity() {
-        TODO("Not yet implemented")
+
     }
 
 
