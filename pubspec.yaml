@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  pigeon: 9.2.4
+  pigeon: 23.0.0
   get: ^4.6.5
 
 

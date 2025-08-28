@@ -8,33 +8,70 @@ import 'dart:typed_data' show Float64List, Int32List, Int64List, Uint8List;
 import 'package:flutter/foundation.dart' show ReadBuffer, WriteBuffer;
 import 'package:flutter/services.dart';
 
+PlatformException _createConnectionError(String channelName) {
+  return PlatformException(
+    code: 'channel-error',
+    message: 'Unable to establish connection on channel: "$channelName".',
+  );
+}
+
+
+class _PigeonCodec extends StandardMessageCodec {
+  const _PigeonCodec();
+
+  @override
+  void writeValue(WriteBuffer buffer, Object? value) {
+    if (value is int) {
+      buffer.putUint8(4);
+      buffer.putInt64(value);
+    } else {
+      super.writeValue(buffer, value);
+    }
+  }
+
+  @override
+  Object? readValueOfType(int type, ReadBuffer buffer) {
+    switch (type) {
+      default:
+        return super.readValueOfType(type, buffer);
+    }
+  }
+}
+
 class FlutterPrintApi {
   /// Constructor for [FlutterPrintApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-  FlutterPrintApi({BinaryMessenger? binaryMessenger})
-      : _binaryMessenger = binaryMessenger;
-  final BinaryMessenger? _binaryMessenger;
+  FlutterPrintApi(
+      {BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
+      : pigeonVar_binaryMessenger = binaryMessenger,
+        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+            ? '.$messageChannelSuffix'
+            : '';
+  final BinaryMessenger? pigeonVar_binaryMessenger;
 
-  static const MessageCodec<Object?> codec = StandardMessageCodec();
+  static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
+
+  final String pigeonVar_messageChannelSuffix;
 
   /// 打印文本数据
-  Future<void> printText(String arg_text) async {
-    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.FlutterPrintApi.printText', codec,
-        binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_text]) as List<Object?>?;
-    if (replyList == null) {
+  Future<void> printText(String text) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.printText$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<
+        Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final List<Object?>? pigeonVar_replyList =
+    await pigeonVar_channel.send(<Object?>[text]) as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-      );
-    } else if (replyList.length > 1) {
-      throw PlatformException(
-        code: replyList[0]! as String,
-        message: replyList[1] as String?,
-        details: replyList[2],
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
       );
     } else {
       return;
@@ -48,22 +85,101 @@ class FlutterPrintApi {
   ///     - icons/heart.png
   /// filePath = assets/icons/heart.png
   ///
-  Future<void> printImage(int arg_x, int arg_y, String arg_filePath) async {
-    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.FlutterPrintApi.printImage', codec,
-        binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList = await channel
-        .send(<Object?>[arg_x, arg_y, arg_filePath]) as List<Object?>?;
-    if (replyList == null) {
+  Future<void> printImage(int x, int y, String filePath) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.printImage$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<
+        Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final List<Object?>? pigeonVar_replyList =
+    await pigeonVar_channel.send(<Object?>[x, y, filePath]) as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
       );
-    } else if (replyList.length > 1) {
+    } else {
+      return;
+    }
+  }
+
+  /// 打印二维码
+  /// ommand PrinterHelper.BARCODE：⽔平⽅向
+  ///        PrinterHelper.VBARCODE：垂直⽅向
+  ///
+  /// x     ⼆维码的起始横坐标。（单位：dot）
+  ///
+  /// y     ⼆维码的起始纵坐标。（单位：dot）
+  ///
+  /// M     QR的类型：
+  ///       1：普通类型
+  ///       2：在类型1的基础上增加了个别的符号
+  ///
+  /// U     单位宽度/模块的单元⾼度,范围是1到32默认为6
+  ///
+  /// data  ⼆维码的数据
+  Future<void> printQrCode(String command, String x, String y, String M,
+      String U, String data) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.printQrCode$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<
+        Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final List<Object?>? pigeonVar_replyList =
+    await pigeonVar_channel.send(<Object?>[command, x, y, M, U, data]) as List<
+        Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
       throw PlatformException(
-        code: replyList[0]! as String,
-        message: replyList[1] as String?,
-        details: replyList[2],
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else {
+      return;
+    }
+  }
+
+  Future<void> printBarcode(String command, String type, String width,
+      String ratio, String height, String x, String y, bool undertext,
+      String number, String size, String offset, String data) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.printBarcode$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<
+        Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final List<Object?>? pigeonVar_replyList =
+    await pigeonVar_channel.send(<Object?>[
+      command,
+      type,
+      width,
+      ratio,
+      height,
+      x,
+      y,
+      undertext,
+      number,
+      size,
+      offset,
+      data
+    ]) as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
       );
     } else {
       return;
@@ -72,20 +188,22 @@ class FlutterPrintApi {
 
   /// 控制打印机走纸到标签缝隙（标缝）
   Future<void> form() async {
-    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.FlutterPrintApi.form', codec,
-        binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
-    if (replyList == null) {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.form$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<
+        Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final List<Object?>? pigeonVar_replyList =
+    await pigeonVar_channel.send(null) as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-      );
-    } else if (replyList.length > 1) {
-      throw PlatformException(
-        code: replyList[0]! as String,
-        message: replyList[1] as String?,
-        details: replyList[2],
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
       );
     } else {
       return;
@@ -94,20 +212,22 @@ class FlutterPrintApi {
 
   /// 打印输出
   Future<void> print() async {
-    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.FlutterPrintApi.print', codec,
-        binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
-    if (replyList == null) {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.print$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<
+        Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final List<Object?>? pigeonVar_replyList =
+    await pigeonVar_channel.send(null) as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-      );
-    } else if (replyList.length > 1) {
-      throw PlatformException(
-        code: replyList[0]! as String,
-        message: replyList[1] as String?,
-        details: replyList[2],
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
       );
     } else {
       return;
@@ -115,30 +235,31 @@ class FlutterPrintApi {
   }
 
   /// 获取状态
-  Future<int> getEndStatus(int arg_secondTimeout) async {
-    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.FlutterPrintApi.getEndStatus', codec,
-        binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_secondTimeout]) as List<Object?>?;
-    if (replyList == null) {
+  Future<int> getEndStatus(int secondTimeout) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.getEndStatus$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<
+        Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final List<Object?>? pigeonVar_replyList =
+    await pigeonVar_channel.send(<Object?>[secondTimeout]) as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
       throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
       );
-    } else if (replyList.length > 1) {
-      throw PlatformException(
-        code: replyList[0]! as String,
-        message: replyList[1] as String?,
-        details: replyList[2],
-      );
-    } else if (replyList[0] == null) {
+    } else if (pigeonVar_replyList[0] == null) {
       throw PlatformException(
         code: 'null-error',
         message: 'Host platform returned null value for non-null return value.',
       );
     } else {
-      return (replyList[0] as int?)!;
+      return (pigeonVar_replyList[0] as int?)!;
     }
   }
 }

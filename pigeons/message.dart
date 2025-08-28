@@ -35,6 +35,29 @@ abstract class FlutterPrintApi {
   ///
   void printImage(int x, int y, String filePath);
 
+  /// 打印二维码
+  /// ommand PrinterHelper.BARCODE：⽔平⽅向
+  ///        PrinterHelper.VBARCODE：垂直⽅向
+  ///
+  /// x     ⼆维码的起始横坐标。（单位：dot）
+  ///
+  /// y     ⼆维码的起始纵坐标。（单位：dot）
+  ///
+  /// M     QR的类型：
+  ///       1：普通类型
+  ///       2：在类型1的基础上增加了个别的符号
+  ///
+  /// U     单位宽度/模块的单元⾼度,范围是1到32默认为6
+  ///
+  /// data  ⼆维码的数据
+  void printQrCode(String command, String x, String y, String M, String U,
+      String data);
+
+  void printBarcode(String command, String type, String width, String ratio,
+      String
+      height, String x, String y, bool undertext, String number, String
+      size, String offset, String data);
+
   /// 控制打印机走纸到标签缝隙（标缝）
   void form();
 

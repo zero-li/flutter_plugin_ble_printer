@@ -77,6 +77,100 @@
 }
 
 
+/*!
+ *  \~chinese
+ *
+ *  打印二维码
+ *  command PrinterHelper.BARCODE：平向
+ *          PrinterHelper.VBARCODE：垂直向
+ *
+ *  x     二维码的起始横坐标。（单位：dot）
+ *  y     二维码的起始纵坐标。（单位：dot）
+ *  M     QR的类型：
+ *        1：普通类型
+ *        2：在类型1的基础上增加了个别的符号
+ *  U     单位宽度/模块的单元度,范围是1到32默认为6
+ *  data  二维码的数据
+ *
+ *  \~english
+ *
+ *  Print QR Code
+ *  command PrinterHelper.BARCODE：Horizontal
+ *          PrinterHelper.VBARCODE：Vertical
+ *
+ *  x     QR code start x coordinate. (unit: dot)
+ *  y     QR code start y coordinate. (unit: dot)
+ *  M     QR code type:
+ *        1：Standard type
+ *        2：Enhanced type with additional symbols
+ *  U     Unit width/module size, range is 1 to 32, default is 6
+ *  data  QR code data
+ *
+ */
+- (BOOL)printQrCodeCommand:(NSString *)command
+                         x:(NSInteger)arg_x
+                         y:(NSInteger)arg_y
+                         M:(NSInteger)arg_M
+                         U:(NSInteger)arg_U
+                      data:(NSString *)arg_data
+                     error:(NSError **)error {
+
+    // 验证参数
+    if (!command || !arg_data) {
+        if (error) {
+            *error = [NSError errorWithDomain:@"PTCommandCPCLDomain"
+                                         code:1001
+                                     userInfo:@{
+                                             NSLocalizedDescriptionKey: @"Command and data cannot be nil"}];
+        }
+        return NO;
+    }
+
+    // 确定是横向还是纵向二维码
+    BOOL isVertical = [command isEqualToString:@"VBARCODE"];
+
+    // 验证M参数（QR码模型）
+    PTCPCLQRCodeModel model;
+    if (arg_M == 1) {
+        model = PTCPCLQRCodeModel1;
+    } else if (arg_M == 2) {
+        model = PTCPCLQRCodeModel2;
+    } else {
+        model = PTCPCLQRCodeModel2; // 默认值
+    }
+
+    // 验证U参数（单元宽度）
+    PTCPCLQRCodeUnitWidth unitWidth;
+    if (arg_U >= 1 && arg_U <= 32) {
+        unitWidth = (PTCPCLQRCodeUnitWidth) arg_U;
+    } else {
+        unitWidth = PTCPCLQRCodeUnitWidth_6; // 默认值
+    }
+
+    // 根据方向调用相应的QR码开始方法
+    if (isVertical) {
+        [self cpclBarcodeVerticalQRcodeWithXPos:arg_x
+                                           yPos:arg_y
+                                          model:model
+                                      unitWidth:unitWidth];
+    } else {
+        [self cpclBarcodeQRcodeWithXPos:arg_x
+                                   yPos:arg_y
+                                  model:model
+                              unitWidth:unitWidth];
+    }
+
+    // 添加QR码数据（使用默认纠错级别和字符模式）
+    [self cpclBarcodeQRCodeCorrectionLecel:PTCPCLQRCodeCorrectionLevelM
+                             characterMode:PTCPCLQRCodeDataInputModeA
+                                   context:arg_data];
+
+    // 结束QR码
+    [self cpclBarcodeQRcodeEnd];
+
+    return YES;
+}
+
 
 
 

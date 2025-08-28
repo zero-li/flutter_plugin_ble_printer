@@ -52,6 +52,59 @@ class FlutterPluginBlePrinterPlugin : FlutterPlugin, ActivityAware, FlutterPrint
 
     }
 
+
+    /**
+     * 打印二维码
+     * ommand PrinterHelper.BARCODE：⽔平⽅向
+     *        PrinterHelper.VBARCODE：垂直⽅向
+     *
+     * x     ⼆维码的起始横坐标。（单位：dot）
+     *
+     * y     ⼆维码的起始纵坐标。（单位：dot）
+     *
+     * M     QR的类型：
+     *       1：普通类型
+     *       2：在类型1的基础上增加了个别的符号
+     *
+     * U     单位宽度/模块的单元⾼度,范围是1到32默认为6
+     *
+     * data  ⼆维码的数据
+     */
+    override fun printQrCode(
+        command: String,
+        x: String,
+        y: String,
+        M: String,
+        U: String,
+        data: String
+    ) {
+        PrinterHelper.PrintQR(command, x, y, M, U, data)
+
+    }
+
+    override fun printBarcode(
+        command: String, type: String, width: String, ratio: String, height: String,
+        x: String, y: String, undertext: Boolean, number: String, size: String,
+        offset: String, data: String
+    ) {
+        PrinterHelper.Barcode(
+            command,
+            type,
+            width,
+            ratio,
+            height,
+            x,
+            y,
+            undertext,
+            number,
+            size,
+            offset,
+            data
+        )
+
+    }
+
+
     override fun print() {
         PrinterHelper.Print()
     }

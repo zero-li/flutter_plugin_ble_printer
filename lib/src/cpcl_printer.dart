@@ -47,6 +47,29 @@ class CPCLPrinter {
     await _api.printImage(x, y, filePath);
   }
 
+  static Future<void> printQrCode(String command, String x, String y, String M,
+      String U, String data) async {
+    await _api.printQrCode(command, x, y, M, U, data);
+  }
+
+  static Future<void> printBarcode(String command, String type, String width,
+      String ratio, String height, String x, String y, bool undertext,
+      String number, String size, String offset, String data) async {
+    await _api.printBarcode(
+        command,
+        type,
+        width,
+        ratio,
+        height,
+        x,
+        y,
+        undertext,
+        number,
+        size,
+        offset,
+        data);
+  }
+
   static Future<void> print() async {
     await _api.print();
   }
@@ -67,6 +90,11 @@ class CPCLPrinter {
   static Future<String> loadAssetTemple({required String assetFilePath,
     required Map<String, dynamic> mapReplace}) async {
     var content = await rootBundle.loadString(assetFilePath);
+    content = content
+      ..replaceAll('\r\n', '\n') // 首先将 CRLF 替换为 LF
+          .replaceAll('\r', '\n') // 然后将 CR 替换为 LF
+          .replaceAll('\n', '\r\n'); // 最后将 LF 替换为 CRLF
+
 
     mapReplace.forEach((key, value) {
       content = content.replaceAll(key, value);
