@@ -47,5 +47,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+
+	<key>NSBluetoothAlwaysUsageDescription</key>
+    <string>此应用需要使用蓝牙来连接和打印到蓝牙打印机</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>此应用需要使用蓝牙来连接和打印到蓝牙打印机</string>
+
 </dict>
 </plist>

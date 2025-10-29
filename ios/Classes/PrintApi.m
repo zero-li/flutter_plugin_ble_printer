@@ -171,7 +171,67 @@
     return YES;
 }
 
+- (void)printBarcodeCommand:(NSString *)command
+                       type:(NSString *)type
+                      width:(NSInteger)width
+                      ratio:(NSInteger)ratio
+                     height:(NSInteger)height
+                          x:(NSInteger)x
+                          y:(NSInteger)y
+                  undertext:(nullable NSString
 
+*)
+undertext
+        number
+:(NSInteger)
+number
+        size
+:(NSInteger)
+size
+        offset
+:(NSInteger)
+offset
+        data
+:(FlutterStandardTypedData *)
+data
+        error
+:(
+FlutterError *_Nullable
+*_Nonnull)error {
+
+    // 1. 取出二维码内容
+    NSData *rawData = data.data;
+    NSString * qrText = [[NSString alloc] initWithData:rawData encoding:NSUTF8StringEncoding];
+    if (!qrText) {
+        if (error) {
+            *error = [FlutterError errorWithCode:@"INVALID_DATA"
+                                         message:@"二维码内容不是合法 UTF-8"
+                                         details:nil];
+        }
+        return;
+    }
+
+    // 2. 判断横向 or 纵向
+    BOOL isVertical = [command isEqualToString:@"VBARCODE"];
+
+    // 3. 调 CPCL 指令
+    if (isVertical) {
+        [self.cmd cpclBarcodeVerticalQRcodeWithXPos:x
+                                               yPos:y
+                                              model:PTCPCLQRCodeModel2
+                                          unitWidth:PTCPCLQRCodeUnitWidth_6];
+    } else {
+        [self.cmd cpclBarcodeQRcodeWithXPos:x
+                                       yPos:y
+                                      model:PTCPCLQRCodeModel2
+                                  unitWidth:PTCPCLQRCodeUnitWidth_6];
+    }
+
+    [self.cmd cpclBarcodeQRCodeCorrectionLecel:PTCPCLQRCodeCorrectionLevelM
+                                 characterMode:PTCPCLQRCodeDataInputModeA
+                                       context:qrText];
+    [self.cmd cpclBarcodeQRcodeEnd];
+}
 
 
 - (nullable NSNumber *)getEndStatusSecondTimeout:(NSNumber *)secondTimeout error:(FlutterError *_Nullable *_Nonnull)error{
