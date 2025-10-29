@@ -57,23 +57,28 @@
 }
 
 
-- (void)printImageX:(NSNumber *)x y:(NSNumber *)y filePath:(NSString *)filePath error:(FlutterError *_Nullable *_Nonnull)error{
-    
-    
+- (void)printImageX:(NSInteger)x y:(NSInteger)y filePath:(NSString *)filePath error:(FlutterError *_Nullable
+
+*_Nonnull)error {
+
+    // 1. 把 Flutter 的 assets 路径转成 iOS 沙箱路径
     // https://flutter.cn/docs/development/ui/assets-and-images#loading-flutter-assets-in-ios
-    NSString* key = [self.registrar lookupKeyForAsset:filePath];
-    NSString* path = [[NSBundle mainBundle] pathForResource:key ofType:nil];
+    NSString *key = [self.registrar lookupKeyForAsset:filePath];
+    NSString *path = [[NSBundle mainBundle] pathForResource:key ofType:nil];
     
     
     UIImage *image = [UIImage imageWithContentsOfFile:path];
-    if (image == nil) {
+    if (!image) {
+        if (error) {
+            *error = [FlutterError errorWithCode:@"IMAGE_NOT_FOUND"
+                                         message:@"无法在 bundle 中找到图片"
+                                         details:filePath];
+        }
         return;
     }
-    
-    
-    
-    
-    [self.cmd cpclPrintBitmapWithXPos:[x intValue] yPos:[y intValue] image:image.CGImage bitmapMode:PTBitmapModeDithering compress:PTBitmapCompressModeNone isPackage:NO];
+
+    // 2. 直接调 CPCL 打印图片
+    [self.cmd cpclPrintBitmapWithXPos:x yPos:y image:image.CGImage bitmapMode:PTBitmapModeDithering compress:PTBitmapCompressModeNone isPackage:NO];
 }
 
 
