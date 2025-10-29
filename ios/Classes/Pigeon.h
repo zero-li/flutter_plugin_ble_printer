@@ -31,7 +31,6 @@ FLTGetPigeonCodec(void);
 
 *_Nonnull)
 error;
-
 /// 打印二维码
 /// ommand PrinterHelper.BARCODE：⽔平⽅向
 ///        PrinterHelper.VBARCODE：垂直⽅向

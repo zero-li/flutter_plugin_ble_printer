@@ -14,9 +14,9 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_plugin_ble_printer/ios"
 
 SPEC CHECKSUMS:
-  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  flutter_plugin_ble_printer: 81c30526ef4e88875224d280c57c6436ef4bf92f
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_plugin_ble_printer: fd6ccbc1daa3b2ccb949dad218a424df5d13c410
 
-PODFILE CHECKSUM: 663715e941f9adb426e33bf9376914006f9ea95b
+PODFILE CHECKSUM: 1a782344d33c12ced0182eeab11e8668d253eb48
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.16.2

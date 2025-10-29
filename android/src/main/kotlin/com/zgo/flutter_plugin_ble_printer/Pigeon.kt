@@ -12,32 +12,25 @@ import io.flutter.plugin.common.StandardMessageCodec
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 import kotlin.Any
-import kotlin.Boolean
-import kotlin.Byte
-import kotlin.Long
-import kotlin.String
-import kotlin.Suppress
-import kotlin.Throwable
-import kotlin.toString
 
 private fun wrapResult(result: Any?): List<Any?> {
-  return listOf(result)
+    return listOf(result)
 }
 
 private fun wrapError(exception: Throwable): List<Any?> {
     return if (exception is FlutterError) {
         listOf(
-      exception.code,
-      exception.message,
-      exception.details
-    )
-  } else {
+            exception.code,
+            exception.message,
+            exception.details
+        )
+    } else {
         listOf(
-      exception.javaClass.simpleName,
-      exception.toString(),
-      "Cause: " + exception.cause + ", Stacktrace: " + Log.getStackTraceString(exception)
-    )
-  }
+            exception.javaClass.simpleName,
+            exception.toString(),
+            "Cause: " + exception.cause + ", Stacktrace: " + Log.getStackTraceString(exception)
+        )
+    }
 }
 
 /**
@@ -47,9 +40,9 @@ private fun wrapError(exception: Throwable): List<Any?> {
  * @property details The error details. Must be a datatype supported by the api codec.
  */
 class FlutterError(
-  val code: String,
-  override val message: String? = null,
-  val details: Any? = null
+    val code: String,
+    override val message: String? = null,
+    val details: Any? = null
 ) : Throwable()
 
 private open class PigeonPigeonCodec : StandardMessageCodec() {
@@ -64,18 +57,19 @@ private open class PigeonPigeonCodec : StandardMessageCodec() {
 
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface FlutterPrintApi {
-  /** 打印文本数据 */
-  fun printText(text: String)
-  /**
-   * 打印图片
-   * https://flutter.cn/docs/development/ui/assets-and-images#loading-flutter-assets-in-ios
-   * flutter:
-   *   assets:
-   *     - icons/heart.png
-   * filePath = assets/icons/heart.png
-   *
-   */
-  fun printImage(x: Long, y: Long, filePath: String)
+    /** 打印文本数据 */
+    fun printText(text: String)
+
+    /**
+     * 打印图片
+     * https://flutter.cn/docs/development/ui/assets-and-images#loading-flutter-assets-in-ios
+     * flutter:
+     *   assets:
+     *     - icons/heart.png
+     * filePath = assets/icons/heart.png
+     *
+     */
+    fun printImage(x: Long, y: Long, filePath: String)
 
     /**
      * 打印二维码
@@ -109,207 +103,211 @@ interface FlutterPrintApi {
         offset: String,
         data: String
     )
-  /** 控制打印机走纸到标签缝隙（标缝） */
-  fun form()
-  /** 打印输出 */
-  fun print()
-  /** 获取状态 */
-  fun getEndStatus(secondTimeout: Long): Long
 
-  companion object {
-    /** The codec used by FlutterPrintApi. */
-    val codec: MessageCodec<Any?> by lazy {
-        PigeonPigeonCodec()
-    }
-    /** Sets up an instance of `FlutterPrintApi` to handle messages through the `binaryMessenger`. */
-    @JvmOverloads
-    fun setUp(
-        binaryMessenger: BinaryMessenger,
-        api: FlutterPrintApi?,
-        messageChannelSuffix: String = ""
-    ) {
-        val separatedMessageChannelSuffix =
-            if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
-      run {
-          val channel = BasicMessageChannel<Any?>(
-              binaryMessenger,
-              "dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.printText$separatedMessageChannelSuffix",
-              codec
-          )
-        if (api != null) {
-          channel.setMessageHandler { message, reply ->
-            val args = message as List<Any?>
-            val textArg = args[0] as String
-              val wrapped: List<Any?> = try {
-              api.printText(textArg)
-                  listOf(null)
-            } catch (exception: Throwable) {
-                  wrapError(exception)
-            }
-            reply.reply(wrapped)
-          }
-        } else {
-          channel.setMessageHandler(null)
+    /** 控制打印机走纸到标签缝隙（标缝） */
+    fun form()
+
+    /** 打印输出 */
+    fun print()
+
+    /** 获取状态 */
+    fun getEndStatus(secondTimeout: Long): Long
+
+    companion object {
+        /** The codec used by FlutterPrintApi. */
+        val codec: MessageCodec<Any?> by lazy {
+            PigeonPigeonCodec()
         }
-      }
-      run {
-          val channel = BasicMessageChannel<Any?>(
-              binaryMessenger,
-              "dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.printImage$separatedMessageChannelSuffix",
-              codec
-          )
-        if (api != null) {
-          channel.setMessageHandler { message, reply ->
-            val args = message as List<Any?>
-              val xArg = args[0] as Long
-              val yArg = args[1] as Long
-            val filePathArg = args[2] as String
-              val wrapped: List<Any?> = try {
-              api.printImage(xArg, yArg, filePathArg)
-                  listOf(null)
-              } catch (exception: Throwable) {
-                  wrapError(exception)
-              }
-              reply.reply(wrapped)
-          }
-        } else {
-            channel.setMessageHandler(null)
-        }
-      }
-        run {
-            val channel = BasicMessageChannel<Any?>(
-                binaryMessenger,
-                "dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.printQrCode$separatedMessageChannelSuffix",
-                codec
-            )
-            if (api != null) {
-                channel.setMessageHandler { message, reply ->
-                    val args = message as List<Any?>
-                    val commandArg = args[0] as String
-                    val xArg = args[1] as String
-                    val yArg = args[2] as String
-                    val MArg = args[3] as String
-                    val UArg = args[4] as String
-                    val dataArg = args[5] as String
-                    val wrapped: List<Any?> = try {
-                        api.printQrCode(commandArg, xArg, yArg, MArg, UArg, dataArg)
-                        listOf(null)
-                    } catch (exception: Throwable) {
-                        wrapError(exception)
+
+        /** Sets up an instance of `FlutterPrintApi` to handle messages through the `binaryMessenger`. */
+        @JvmOverloads
+        fun setUp(
+            binaryMessenger: BinaryMessenger,
+            api: FlutterPrintApi?,
+            messageChannelSuffix: String = ""
+        ) {
+            val separatedMessageChannelSuffix =
+                if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+            run {
+                val channel = BasicMessageChannel<Any?>(
+                    binaryMessenger,
+                    "dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.printText$separatedMessageChannelSuffix",
+                    codec
+                )
+                if (api != null) {
+                    channel.setMessageHandler { message, reply ->
+                        val args = message as List<Any?>
+                        val textArg = args[0] as String
+                        val wrapped: List<Any?> = try {
+                            api.printText(textArg)
+                            listOf(null)
+                        } catch (exception: Throwable) {
+                            wrapError(exception)
+                        }
+                        reply.reply(wrapped)
                     }
-                    reply.reply(wrapped)
+                } else {
+                    channel.setMessageHandler(null)
                 }
-            } else {
-                channel.setMessageHandler(null)
+            }
+            run {
+                val channel = BasicMessageChannel<Any?>(
+                    binaryMessenger,
+                    "dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.printImage$separatedMessageChannelSuffix",
+                    codec
+                )
+                if (api != null) {
+                    channel.setMessageHandler { message, reply ->
+                        val args = message as List<Any?>
+                        val xArg = args[0] as Long
+                        val yArg = args[1] as Long
+                        val filePathArg = args[2] as String
+                        val wrapped: List<Any?> = try {
+                            api.printImage(xArg, yArg, filePathArg)
+                            listOf(null)
+                        } catch (exception: Throwable) {
+                            wrapError(exception)
+                        }
+                        reply.reply(wrapped)
+                    }
+                } else {
+                    channel.setMessageHandler(null)
+                }
+            }
+            run {
+                val channel = BasicMessageChannel<Any?>(
+                    binaryMessenger,
+                    "dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.printQrCode$separatedMessageChannelSuffix",
+                    codec
+                )
+                if (api != null) {
+                    channel.setMessageHandler { message, reply ->
+                        val args = message as List<Any?>
+                        val commandArg = args[0] as String
+                        val xArg = args[1] as String
+                        val yArg = args[2] as String
+                        val MArg = args[3] as String
+                        val UArg = args[4] as String
+                        val dataArg = args[5] as String
+                        val wrapped: List<Any?> = try {
+                            api.printQrCode(commandArg, xArg, yArg, MArg, UArg, dataArg)
+                            listOf(null)
+                        } catch (exception: Throwable) {
+                            wrapError(exception)
+                        }
+                        reply.reply(wrapped)
+                    }
+                } else {
+                    channel.setMessageHandler(null)
+                }
+            }
+            run {
+                val channel = BasicMessageChannel<Any?>(
+                    binaryMessenger,
+                    "dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.printBarcode$separatedMessageChannelSuffix",
+                    codec
+                )
+                if (api != null) {
+                    channel.setMessageHandler { message, reply ->
+                        val args = message as List<Any?>
+                        val commandArg = args[0] as String
+                        val typeArg = args[1] as String
+                        val widthArg = args[2] as String
+                        val ratioArg = args[3] as String
+                        val heightArg = args[4] as String
+                        val xArg = args[5] as String
+                        val yArg = args[6] as String
+                        val undertextArg = args[7] as Boolean
+                        val numberArg = args[8] as String
+                        val sizeArg = args[9] as String
+                        val offsetArg = args[10] as String
+                        val dataArg = args[11] as String
+                        val wrapped: List<Any?> = try {
+                            api.printBarcode(
+                                commandArg,
+                                typeArg,
+                                widthArg,
+                                ratioArg,
+                                heightArg,
+                                xArg,
+                                yArg,
+                                undertextArg,
+                                numberArg,
+                                sizeArg,
+                                offsetArg,
+                                dataArg
+                            )
+                            listOf(null)
+                        } catch (exception: Throwable) {
+                            wrapError(exception)
+                        }
+                        reply.reply(wrapped)
+                    }
+                } else {
+                    channel.setMessageHandler(null)
+                }
+            }
+            run {
+                val channel = BasicMessageChannel<Any?>(
+                    binaryMessenger,
+                    "dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.form$separatedMessageChannelSuffix",
+                    codec
+                )
+                if (api != null) {
+                    channel.setMessageHandler { _, reply ->
+                        val wrapped: List<Any?> = try {
+                            api.form()
+                            listOf(null)
+                        } catch (exception: Throwable) {
+                            wrapError(exception)
+                        }
+                        reply.reply(wrapped)
+                    }
+                } else {
+                    channel.setMessageHandler(null)
+                }
+            }
+            run {
+                val channel = BasicMessageChannel<Any?>(
+                    binaryMessenger,
+                    "dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.print$separatedMessageChannelSuffix",
+                    codec
+                )
+                if (api != null) {
+                    channel.setMessageHandler { _, reply ->
+                        val wrapped: List<Any?> = try {
+                            api.print()
+                            listOf(null)
+                        } catch (exception: Throwable) {
+                            wrapError(exception)
+                        }
+                        reply.reply(wrapped)
+                    }
+                } else {
+                    channel.setMessageHandler(null)
+                }
+            }
+            run {
+                val channel = BasicMessageChannel<Any?>(
+                    binaryMessenger,
+                    "dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.getEndStatus$separatedMessageChannelSuffix",
+                    codec
+                )
+                if (api != null) {
+                    channel.setMessageHandler { message, reply ->
+                        val args = message as List<Any?>
+                        val secondTimeoutArg = args[0] as Long
+                        val wrapped: List<Any?> = try {
+                            listOf(api.getEndStatus(secondTimeoutArg))
+                        } catch (exception: Throwable) {
+                            wrapError(exception)
+                        }
+                        reply.reply(wrapped)
+                    }
+                } else {
+                    channel.setMessageHandler(null)
+                }
             }
         }
-        run {
-            val channel = BasicMessageChannel<Any?>(
-                binaryMessenger,
-                "dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.printBarcode$separatedMessageChannelSuffix",
-                codec
-            )
-            if (api != null) {
-                channel.setMessageHandler { message, reply ->
-                    val args = message as List<Any?>
-                    val commandArg = args[0] as String
-                    val typeArg = args[1] as String
-                    val widthArg = args[2] as String
-                    val ratioArg = args[3] as String
-                    val heightArg = args[4] as String
-                    val xArg = args[5] as String
-                    val yArg = args[6] as String
-                    val undertextArg = args[7] as Boolean
-                    val numberArg = args[8] as String
-                    val sizeArg = args[9] as String
-                    val offsetArg = args[10] as String
-                    val dataArg = args[11] as String
-                    val wrapped: List<Any?> = try {
-                        api.printBarcode(
-                            commandArg,
-                            typeArg,
-                            widthArg,
-                            ratioArg,
-                            heightArg,
-                            xArg,
-                            yArg,
-                            undertextArg,
-                            numberArg,
-                            sizeArg,
-                            offsetArg,
-                            dataArg
-                        )
-                        listOf(null)
-            } catch (exception: Throwable) {
-                        wrapError(exception)
-            }
-            reply.reply(wrapped)
-          }
-        } else {
-          channel.setMessageHandler(null)
-        }
-      }
-      run {
-          val channel = BasicMessageChannel<Any?>(
-              binaryMessenger,
-              "dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.form$separatedMessageChannelSuffix",
-              codec
-          )
-        if (api != null) {
-          channel.setMessageHandler { _, reply ->
-              val wrapped: List<Any?> = try {
-              api.form()
-                  listOf(null)
-            } catch (exception: Throwable) {
-                  wrapError(exception)
-            }
-            reply.reply(wrapped)
-          }
-        } else {
-          channel.setMessageHandler(null)
-        }
-      }
-      run {
-          val channel = BasicMessageChannel<Any?>(
-              binaryMessenger,
-              "dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.print$separatedMessageChannelSuffix",
-              codec
-          )
-        if (api != null) {
-          channel.setMessageHandler { _, reply ->
-              val wrapped: List<Any?> = try {
-              api.print()
-                  listOf(null)
-            } catch (exception: Throwable) {
-                  wrapError(exception)
-            }
-            reply.reply(wrapped)
-          }
-        } else {
-          channel.setMessageHandler(null)
-        }
-      }
-      run {
-          val channel = BasicMessageChannel<Any?>(
-              binaryMessenger,
-              "dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.getEndStatus$separatedMessageChannelSuffix",
-              codec
-          )
-        if (api != null) {
-          channel.setMessageHandler { message, reply ->
-            val args = message as List<Any?>
-              val secondTimeoutArg = args[0] as Long
-              val wrapped: List<Any?> = try {
-                  listOf(api.getEndStatus(secondTimeoutArg))
-            } catch (exception: Throwable) {
-                  wrapError(exception)
-            }
-            reply.reply(wrapped)
-          }
-        } else {
-          channel.setMessageHandler(null)
-        }
-      }
     }
-  }
 }

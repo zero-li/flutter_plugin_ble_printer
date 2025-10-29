@@ -7,7 +7,6 @@
 #import <FlutterMacOS/FlutterMacOS.h>
 #else
 #import <Flutter/Flutter.h>
-
 #endif
 
 #if !__has_feature(objc_arc)
@@ -30,7 +29,6 @@ static id GetNullableObjectAtIndex(NSArray <id> *array, NSInteger key) {
 
 @interface FLTPigeonPigeonCodecReader : FlutterStandardReader
 @end
-
 @implementation FLTPigeonPigeonCodecReader
 - (nullable id)readValueOfType:(UInt8)type {
     switch (type) {
@@ -42,7 +40,6 @@ static id GetNullableObjectAtIndex(NSArray <id> *array, NSInteger key) {
 
 @interface FLTPigeonPigeonCodecWriter : FlutterStandardWriter
 @end
-
 @implementation FLTPigeonPigeonCodecWriter
 - (void)writeValue:(id)value {
     {
@@ -53,12 +50,10 @@ static id GetNullableObjectAtIndex(NSArray <id> *array, NSInteger key) {
 
 @interface FLTPigeonPigeonCodecReaderWriter : FlutterStandardReaderWriter
 @end
-
 @implementation FLTPigeonPigeonCodecReaderWriter
 - (FlutterStandardWriter *)writerWithData:(NSMutableData *)data {
     return [[FLTPigeonPigeonCodecWriter alloc] initWithData:data];
 }
-
 - (FlutterStandardReader *)readerWithData:(NSData *)data {
     return [[FLTPigeonPigeonCodecReader alloc] initWithData:data];
 }
@@ -97,13 +92,13 @@ void SetUpFLTFlutterPrintApiWithSuffix(id <FlutterBinaryMessenger> binaryMesseng
                     api);
           [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
               NSArray <id> *args = message;
-        NSString *arg_text = GetNullableObjectAtIndex(args, 0);
-        FlutterError *error;
-        [api printTextText:arg_text error:&error];
-        callback(wrapResult(nil, error));
-      }];
-    } else {
-      [channel setMessageHandler:nil];
+              NSString *arg_text = GetNullableObjectAtIndex(args, 0);
+              FlutterError *error;
+              [api printTextText:arg_text error:&error];
+              callback(wrapResult(nil, error));
+          }];
+      } else {
+          [channel setMessageHandler:nil];
     }
   }
   /// 打印图片
@@ -127,12 +122,12 @@ void SetUpFLTFlutterPrintApiWithSuffix(id <FlutterBinaryMessenger> binaryMesseng
               NSArray <id> *args = message;
               NSInteger arg_x = [GetNullableObjectAtIndex(args, 0) integerValue];
               NSInteger arg_y = [GetNullableObjectAtIndex(args, 1) integerValue];
-        NSString *arg_filePath = GetNullableObjectAtIndex(args, 2);
-        FlutterError *error;
-        [api printImageX:arg_x y:arg_y filePath:arg_filePath error:&error];
-        callback(wrapResult(nil, error));
-      }];
-    } else {
+              NSString *arg_filePath = GetNullableObjectAtIndex(args, 2);
+              FlutterError *error;
+              [api printImageX:arg_x y:arg_y filePath:arg_filePath error:&error];
+              callback(wrapResult(nil, error));
+          }];
+      } else {
       [channel setMessageHandler:nil];
     }
   }
@@ -222,54 +217,54 @@ void SetUpFLTFlutterPrintApiWithSuffix(id <FlutterBinaryMessenger> binaryMesseng
                     @"FLTFlutterPrintApi api (%@) doesn't respond to @selector(formWithError:)",
                     api);
           [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
-        FlutterError *error;
-        [api formWithError:&error];
-        callback(wrapResult(nil, error));
-      }];
-    } else {
-      [channel setMessageHandler:nil];
-    }
+              FlutterError *error;
+              [api formWithError:&error];
+              callback(wrapResult(nil, error));
+          }];
+      } else {
+          [channel setMessageHandler:nil];
+      }
   }
-  /// 打印输出
-  {
-    FlutterBasicMessageChannel *channel =
+    /// 打印输出
+    {
+        FlutterBasicMessageChannel *channel =
       [[FlutterBasicMessageChannel alloc]
               initWithName:[NSString stringWithFormat:@"%@%@", @"dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.print", messageChannelSuffix]
         binaryMessenger:binaryMessenger
                      codec:FLTGetPigeonCodec()];
-      if (api) {
-          NSCAssert([api respondsToSelector:@selector(printWithError:)],
-                    @"FLTFlutterPrintApi api (%@) doesn't respond to @selector(printWithError:)",
-                    api);
-          [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
-        FlutterError *error;
-        [api printWithError:&error];
-        callback(wrapResult(nil, error));
-      }];
-    } else {
-      [channel setMessageHandler:nil];
+        if (api) {
+            NSCAssert([api respondsToSelector:@selector(printWithError:)],
+                      @"FLTFlutterPrintApi api (%@) doesn't respond to @selector(printWithError:)",
+                      api);
+            [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+                FlutterError *error;
+                [api printWithError:&error];
+                callback(wrapResult(nil, error));
+            }];
+        } else {
+            [channel setMessageHandler:nil];
+        }
     }
-  }
-  /// 获取状态
-  {
-    FlutterBasicMessageChannel *channel =
+    /// 获取状态
+    {
+        FlutterBasicMessageChannel *channel =
       [[FlutterBasicMessageChannel alloc]
               initWithName:[NSString stringWithFormat:@"%@%@", @"dev.flutter.pigeon.flutter_plugin_ble_printer.FlutterPrintApi.getEndStatus", messageChannelSuffix]
         binaryMessenger:binaryMessenger
                      codec:FLTGetPigeonCodec()];
-      if (api) {
-          NSCAssert([api respondsToSelector:@selector(getEndStatusSecondTimeout:error:)],
-                    @"FLTFlutterPrintApi api (%@) doesn't respond to @selector(getEndStatusSecondTimeout:error:)",
-                    api);
-          [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
-              NSArray <id> *args = message;
-              NSInteger arg_secondTimeout = [GetNullableObjectAtIndex(args, 0) integerValue];
-        FlutterError *error;
-        NSNumber *output = [api getEndStatusSecondTimeout:arg_secondTimeout error:&error];
-        callback(wrapResult(output, error));
-      }];
-    } else {
-      [channel setMessageHandler:nil];
+        if (api) {
+            NSCAssert([api respondsToSelector:@selector(getEndStatusSecondTimeout:error:)],
+                      @"FLTFlutterPrintApi api (%@) doesn't respond to @selector(getEndStatusSecondTimeout:error:)",
+                      api);
+            [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+                NSArray <id> *args = message;
+                NSInteger arg_secondTimeout = [GetNullableObjectAtIndex(args, 0) integerValue];
+                FlutterError *error;
+                NSNumber *output = [api getEndStatusSecondTimeout:arg_secondTimeout error:&error];
+                callback(wrapResult(output, error));
+            }];
+        } else {
+            [channel setMessageHandler:nil];
+        }
     }
-  }
 }

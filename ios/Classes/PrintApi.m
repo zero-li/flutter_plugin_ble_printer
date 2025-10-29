@@ -149,24 +149,24 @@
 
     // 根据方向调用相应的QR码开始方法
     if (isVertical) {
-        [self cpclBarcodeVerticalQRcodeWithXPos:arg_x
-                                           yPos:arg_y
-                                          model:model
-                                      unitWidth:unitWidth];
+        [self.cmd cpclBarcodeVerticalQRcodeWithXPos:arg_x
+                                               yPos:arg_y
+                                              model:model
+                                          unitWidth:unitWidth];
     } else {
-        [self cpclBarcodeQRcodeWithXPos:arg_x
-                                   yPos:arg_y
-                                  model:model
-                              unitWidth:unitWidth];
+        [self.cmd cpclBarcodeQRcodeWithXPos:arg_x
+                                       yPos:arg_y
+                                      model:model
+                                  unitWidth:unitWidth];
     }
 
     // 添加QR码数据（使用默认纠错级别和字符模式）
-    [self cpclBarcodeQRCodeCorrectionLecel:PTCPCLQRCodeCorrectionLevelM
-                             characterMode:PTCPCLQRCodeDataInputModeA
-                                   context:arg_data];
+    [self.cmd cpclBarcodeQRCodeCorrectionLecel:PTCPCLQRCodeCorrectionLevelM
+                                 characterMode:PTCPCLQRCodeDataInputModeA
+                                       context:arg_data];
 
     // 结束QR码
-    [self cpclBarcodeQRcodeEnd];
+    [self.cmd cpclBarcodeQRcodeEnd];
 
     return YES;
 }

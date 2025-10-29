@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   pigeon: 23.0.0
-  get: ^4.6.5
+  get: ^4.6.6
 
 
   #  flutter_blue_plus: ^1.3.1

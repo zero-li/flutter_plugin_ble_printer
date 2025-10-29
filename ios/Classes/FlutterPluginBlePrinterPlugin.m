@@ -24,7 +24,7 @@
     
     
     PrintApi * printApi = [[PrintApi alloc] init];
-    FLTFlutterPrintApiSetup([registrar messenger], [printApi initWithMessenger:registrar]);
+    SetUpFLTFlutterPrintApi([registrar messenger], [printApi initWithMessenger:registrar]);
     
     BluetoothApi * bluetoothApi = [[BluetoothApi alloc] init];
     FLTHostBluetoothApiSetup([registrar messenger], [bluetoothApi initWithMessenger:registrar]);
