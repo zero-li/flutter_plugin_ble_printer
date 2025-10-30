@@ -1,3 +1,11 @@
+# SDK 说明
+
+## 下载地址
+
+[CPCL SDK](https://www.hprt.com.cn/search_keywork.html?search_key=HM-A300&search_num=21)
+
+## CPCL指令
+
 ```bash
 /*!
  *  \~chinese
