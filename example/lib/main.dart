@@ -52,7 +52,7 @@ class _MyAppState extends State<MyApp> {
                             '[barcode]': "1363604310467",
                           });
 
-                      await CPCLPrinter.printTemple(temple);
+                     await CPCLPrinter.printTemple(temple);
 
                       await CPCLPrinter.printImage(
                           20, 20, "assets/images/ic_baishi_mini.png");

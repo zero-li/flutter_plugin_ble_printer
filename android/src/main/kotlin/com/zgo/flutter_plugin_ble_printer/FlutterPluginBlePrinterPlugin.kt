@@ -30,7 +30,8 @@ class FlutterPluginBlePrinterPlugin : FlutterPlugin, ActivityAware, FlutterPrint
 
 
     override fun printText(text: String) {
-        PrinterHelper.printText(text)
+        //PrinterHelper.printText(text)
+        PrinterManager.getCurrentPrinter()?.printText( text)
     }
 
     override fun printImage(x: Long, y: Long, filePath: String) {
@@ -43,11 +44,12 @@ class FlutterPluginBlePrinterPlugin : FlutterPlugin, ActivityAware, FlutterPrint
         Log.d("zgo_print_plugin", "filePath: $filePath $x $y")
         Log.d("zgo_print_plugin", "filePathAndroid: $filePathAndroid")
 
-        val expressLogo = assetManager.open(filePathAndroid)
-        val bitmap = BitmapFactory.decodeStream(expressLogo)
+//        val expressLogo = assetManager.open(filePathAndroid)
+//        val bitmap = BitmapFactory.decodeStream(expressLogo)
 
 
-        PrinterHelper.Expanded(x.toString(), y.toString(), bitmap, 0, 0)
+        //PrinterHelper.Expanded(x.toString(), y.toString(), bitmap, 0, 0)
+        PrinterManager.getCurrentPrinter()?.printImage(x, y, filePath)
 
 
     }
@@ -78,7 +80,9 @@ class FlutterPluginBlePrinterPlugin : FlutterPlugin, ActivityAware, FlutterPrint
         U: String,
         data: String
     ) {
-        PrinterHelper.PrintQR(command, x, y, M, U, data)
+        //PrinterHelper.PrintQR(command, x, y, M, U, data)
+        PrinterManager.getCurrentPrinter()?.printQrCode(command, x, y, M, U, data)
+
 
     }
 
@@ -87,7 +91,21 @@ class FlutterPluginBlePrinterPlugin : FlutterPlugin, ActivityAware, FlutterPrint
         x: String, y: String, undertext: Boolean, number: String, size: String,
         offset: String, data: String
     ) {
-        PrinterHelper.Barcode(
+//        PrinterHelper.Barcode(
+//            command,
+//            type,
+//            width,
+//            ratio,
+//            height,
+//            x,
+//            y,
+//            undertext,
+//            number,
+//            size,
+//            offset,
+//            data
+//        )
+        PrinterManager.getCurrentPrinter()?.printBarcode(
             command,
             type,
             width,
@@ -106,16 +124,20 @@ class FlutterPluginBlePrinterPlugin : FlutterPlugin, ActivityAware, FlutterPrint
 
 
     override fun print() {
-        PrinterHelper.Print()
+//        PrinterHelper.Print()
+        PrinterManager.getCurrentPrinter()?.print()
+
     }
 
     override fun form() {
-        PrinterHelper.Form()
+//        PrinterHelper.Form()
+        PrinterManager.getCurrentPrinter()?.form()
     }
 
     override fun getEndStatus(secondTimeout: Long): Long {
-        val status = PrinterHelper.getEndStatus(secondTimeout.toInt())
-        return status.toLong()
+        //val status = PrinterHelper.getEndStatus(secondTimeout.toInt())
+        val status = PrinterManager.getCurrentPrinter()?.getEndStatus(secondTimeout)
+        return status ?: 0
     }
 
     override fun onAttachedToActivity(bindingAct: ActivityPluginBinding) {

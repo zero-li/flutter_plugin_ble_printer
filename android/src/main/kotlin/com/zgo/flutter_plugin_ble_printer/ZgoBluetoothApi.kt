@@ -278,25 +278,15 @@ class ZgoBluetoothApi(
     }
 
     override fun connectPrinter(device: ZgoBTDevice) {
-        var connecting = 0
-        var result = 0
-        while (connecting < 3) {
-            result = PrinterHelper.PortOpen("Bluetooth,${device.address}")
-            PrinterHelper.logcat("portOpen:$result")
 
-            if (result != 0) {
-                Thread.sleep(500)
-                connecting++
-            } else {
-                break
+        val printer = PrinterManager.createPrinterForDevice(binding, device)
 
-            }
 
-        }
+        val result = printer.connectPrinter(device)
 
-        if (connecting < 3) {
+
+        if (result == 0L) {
             deviceConnected = device
-
             // flutterApi.whenConnectSuccess(device) {}
 
         } else {
@@ -309,7 +299,8 @@ class ZgoBluetoothApi(
     }
 
     override fun disconnectPrinter() {
-        PrinterHelper.portClose()
+        PrinterManager.getCurrentPrinter()?.disconnectPrinter()
+        PrinterManager.releasePrinter()
         deviceConnected?.let {
             //主动断开
             val state = 0L

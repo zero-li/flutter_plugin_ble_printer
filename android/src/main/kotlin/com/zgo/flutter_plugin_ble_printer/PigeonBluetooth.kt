@@ -118,7 +118,7 @@ interface HostBluetoothApi {
     /** 停止搜索蓝牙设备 */
     fun stopScanBluetooth()
 
-    /** 连接打印机 */
+    /** 连接打印机  0 success */
     fun connectPrinter(device: ZgoBTDevice)
 
     /** 断开打印机 */
